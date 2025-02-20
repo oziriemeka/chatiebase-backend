@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('widget_contact_information', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('widget_id');
+            $table->foreignId('widget_id');
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('messenger')->nullable();
@@ -21,6 +21,7 @@ return new class extends Migration
             $table->longText('twitter')->nullable();
             $table->longText('whatsapp')->nullable();
             $table->longText('instagram')->nullable();
+            $table->timestamps();
 
             $table->foreign('widget_id')->references('id')->on('widgets')->onDelete('cascade');
         });

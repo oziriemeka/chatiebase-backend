@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('widget_id');
             $table->string('enable_emojis');
             $table->string('prevent_profanity');
+            $table->timestamps();
 
             $table->foreign('widget_id')->references('id')->on('widgets')->onDelete('cascade');
         });

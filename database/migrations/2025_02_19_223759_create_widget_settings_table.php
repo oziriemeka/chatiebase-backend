@@ -17,8 +17,8 @@ return new class extends Migration
             $table->longText('theme_text_options');
             $table->longText('welcome_message_options');
             $table->longText('background_image_options');
+            $table->timestamps();
 
-            $table->foreign('widget_id')->references('id')->on('widgets')->onDelete('cascade');
         });
     }
 

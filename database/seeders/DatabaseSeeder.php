@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             GeneralSettingsSeeder::class,
             CountrySeeder::class,
-            PermissionSeeder::class
+            PermissionSeeder::class,
+            WidgetSettingsSeeder::class
         ]);
     }
 }

@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('widgets', function (Blueprint $table) {
             $table->id();
-            $table->id();
             $table->binary('id_alias');
             $table->string('website_name');
             $table->string('website_domain');
