@@ -1,0 +1,98 @@
+version: "3.7"
+services:
+    app:
+        build:
+            args:
+                user: sw6
+                uid: 1000
+            context: ./
+            dockerfile: Dockerfile
+        image: chatiebaseapps
+        container_name: chatiebase-app
+        restart: unless-stopped
+        working_dir: /var/www/
+        environment:
+            APP_ENV: local
+            CONTAINER_ROLE: app
+        volumes:
+            - ./:/var/www
+        networks:
+            - chatiebaseapps
+
+    mysql:
+        image: mysql:8.0
+        ports:
+            - "3306:3306"
+        container_name: chatiebaseapps-db
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        volumes:
+            - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+        networks:
+            - chatiebaseapps
+
+    nginx:
+        image: nginx:alpine
+        container_name: chatiebaseapps-nginx
+        restart: unless-stopped
+        ports:
+            - 8000:80
+        expose:
+            - "6001"
+            - "9601"
+        volumes:
+            - ./:/var/www
+            - ./docker-compose/nginx:/etc/nginx/conf.d/
+        networks:
+            - chatiebaseapps
+    soketi:
+        image: 'quay.io/soketi/soketi:0.17-16-alpine'
+        environment:
+            SOKETI_DEBUG: '1'
+            SOKETI_METRICS_SERVER_PORT: ${PUSHER_METRICS_PORT}
+            SOKETI_DEFAULT_APP_ID: ${PUSHER_APP_ID}
+            SOKETI_DEFAULT_APP_KEY: ${PUSHER_APP_KEY}
+            SOKETI_DEFAULT_APP_SECRET: ${PUSHER_APP_SECRET}
+            SOKETI_DEFAULT_APP_ENABLE_CLIENT_MESSAGES: ${PUSHER_APP_ENABLE_CLEINT_MESSAGING},
+        restart: unless-stopped # Added line, not tested, if issue prevail, remove this line
+        ports:
+            - '${SOKETI_PORT:-6001}:${PUSHER_PORT}'
+            - '${SOKETI_METRICS_SERVER_PORT:-9601}:${PUSHER_METRICS_PORT}'
+        networks:
+            - chatiebaseapps
+    redis:
+        image: 'redis:alpine'
+        ports:
+            - '${FORWARD_REDIS_PORT:-6379}:6379'
+        volumes:
+            - ./:/var/www
+        networks:
+            - chatiebaseapps
+        healthcheck:
+            test: [ "CMD", "redis-cli", "ping" ]
+    queue:
+        image: chatiebaseapps
+        container_name: chatiebaseapps-queue
+        restart: unless-stopped
+        depends_on:
+            - app
+        volumes:
+            - ./:/var/www
+        environment:
+            APP_ENV: local
+            CONTAINER_ROLE: queue
+            CACHE_DRIVER: redis
+            SESSION_DRIVER: redis
+            QUEUE_DRIVER: redis
+            REDIS_HOST: redis
+        networks:
+            - chatiebaseapps
+networks:
+    chatiebaseapps:
+        driver: bridge
