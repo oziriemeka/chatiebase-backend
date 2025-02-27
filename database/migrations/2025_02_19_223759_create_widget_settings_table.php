@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('widget_settings', function (Blueprint $table) {
-            $table->id();
             $table->longText('default_theme_options');
             $table->longText('theme_text_options');
             $table->longText('welcome_message_options');

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\OrganizationSettings;
 use App\Models\Permission;
 use App\Models\Privilege;
+use App\Models\UserApplicationSettings;
 use App\Models\UserOrganization;
 use App\Models\UserPrivilege;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -48,6 +49,8 @@ class UserSeeder extends Seeder
         $userPrivilege->privilege_id = "1";
         $userPrivilege->save();
 
+        $this->createUserApplicationSettings($user1->id);
+
         unset($user);
 
         $user = new User();
@@ -69,6 +72,8 @@ class UserSeeder extends Seeder
         $userPrivilege->user_id = $user->id;
         $userPrivilege->privilege_id = "1";
         $userPrivilege->save();
+
+        $this->createUserApplicationSettings($user->id);
 
         unset($user);
 
@@ -93,6 +98,8 @@ class UserSeeder extends Seeder
         $userPrivilege->privilege_id = "2";
         $userPrivilege->save();
 
+        $this->createUserApplicationSettings($user->id);
+
         unset($user);
 
         for($i = 0; $i < 15; $i++){
@@ -114,6 +121,9 @@ class UserSeeder extends Seeder
             $userPrivilege->user_id = $user->id;
             $userPrivilege->privilege_id = "2";
             $userPrivilege->save();
+
+            $this->createUserApplicationSettings($user->id);
+
             unset($user);
         }
     }
@@ -142,5 +152,14 @@ class UserSeeder extends Seeder
         $privilege->organization_id = $org->id;
         $privilege->save();
         $privilege->permissions()->sync($permissions); //Assign all privilege to Administrator
+    }
+
+    private function createUserApplicationSettings($userId){
+        $applicationSettings = new UserApplicationSettings();
+        $applicationSettings->user_id = $userId;
+        $applicationSettings->new_chat_sound = 1;
+        $applicationSettings->existing_chat_sound = 2;
+        $applicationSettings->new_website_visitor_sound = 3;
+        $applicationSettings->save();
     }
 }

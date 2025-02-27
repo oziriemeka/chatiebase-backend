@@ -8,6 +8,7 @@ use App\Http\Resources\TeamMemberResource;
 use App\Mail\InviteTeamMember;
 use App\Models\Privilege;
 use App\Models\User;
+use App\Models\UserApplicationSettings;
 use App\Models\UserOrganization;
 use App\Models\UserPrivilege;
 use Illuminate\Http\Request;
@@ -194,6 +195,15 @@ class TeamMembersController extends Controller
             $userOrganization->user_id = $user->id;
             $userOrganization->organization_id = $organizationId->organization_id;
             $userOrganization->save();
+
+            $applicationSettings = new UserApplicationSettings();
+            $applicationSettings->user_id = $user->id;
+            $applicationSettings->new_chat_sound = "1";
+            $applicationSettings->existing_chat_sound = "1";
+            $applicationSettings->new_website_visitor_sound = "1";
+            $applicationSettings->enable_sound_for_new_visitor = "1";
+            $applicationSettings->save();
+
 
             // Send Email
             // Add Emails to queue

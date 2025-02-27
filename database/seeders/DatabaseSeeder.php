@@ -14,11 +14,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            UserSeeder::class,
+            ApplicationSettingsSeeder::class,
+            ApplicationChatSoundSeeder::class,
             GeneralSettingsSeeder::class,
             CountrySeeder::class,
+            UserSeeder::class,
             PermissionSeeder::class,
-            WidgetSettingsSeeder::class
+            WidgetSettingsSeeder::class,
         ]);
     }
 }

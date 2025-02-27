@@ -12,6 +12,7 @@ use App\Models\PasswordReset;
 use App\Models\Permission;
 use App\Models\Privilege;
 use App\Models\User;
+use App\Models\UserApplicationSettings;
 use App\Models\UserOrganization;
 use App\Services\GuzzleClient;
 use Carbon\Carbon;
@@ -23,10 +24,13 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use function App\Helpers\getUserLocation;
-use const App\Helpers\FALLBACK_LOCATION;
 
-
+const FALLBACK_COUNTRY = "US";
+const FALLBACK_TIMEZONE = "America/New_York";
+const FALLBACK_LOCATION = [
+    "country_code" => FALLBACK_COUNTRY,
+    "timezone" => FALLBACK_TIMEZONE
+];
 class AuthController extends Controller
 {
     public function register(Request $request)
@@ -142,6 +146,7 @@ class AuthController extends Controller
                 $userOrganization->save();
 
                 $this->createDefaultRolesAndPermission($userOrganization);
+                $this->createUserApplicationSettings($user->id);
                 $token = Auth::login($user);
 
                 return response()->json([
@@ -216,9 +221,9 @@ class AuthController extends Controller
     public function check()
     {
         if (Auth::check()) {
-            return response()->json([ SuccessStatus::DATA => 1 ]);
+            return response()->json([ SuccessStatus::DATA => true ]);
         } else {
-            return response()->json([ SuccessStatus::DATA => 0 ]);
+            return response()->json([ SuccessStatus::DATA => false ]);
         }
     }
     public function logout()
@@ -234,7 +239,6 @@ class AuthController extends Controller
         $user->last_login = Carbon::now();
         $user->save();
 
-
         return response()->json([
             'user_id' => $user->id,
             'access_token' => $token,
@@ -243,6 +247,7 @@ class AuthController extends Controller
             'name' => $user->name,
             'email' => $user->email,
             'avatar' => $user->avatar,
+            'permission' => $user->privilege->name
         ]);
     }
     public function resetPassword(Request $request)
@@ -366,5 +371,15 @@ class AuthController extends Controller
     public function getTimeZone()
     {
         return DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+    }
+
+    private function createUserApplicationSettings($userId){
+        $applicationSettings = new UserApplicationSettings();
+        $applicationSettings->user_id = $userId;
+        $applicationSettings->new_chat_sound = "1";
+        $applicationSettings->existing_chat_sound = "1";
+        $applicationSettings->new_website_visitor_sound = "1";
+        $applicationSettings->enable_sound_for_new_visitor = "1";
+        $applicationSettings->save();
     }
 }

@@ -41,23 +41,23 @@ class WidgetSettingsSeeder extends Seeder
             json_encode([
                 [
                     'id' => "theme_1",
-                    "title" => "Questions ? Chat with us!",
+                    "name" => "Questions ? Chat with us!",
                 ],
                 [
                     'id' => "theme_2",
-                    "title" => "Questions ? Chat with me!",
+                    "name" => "Questions ? Chat with me!",
                 ],
                 [
                     'id' => "theme_3",
-                    "title" => "Ask us your questions!",
+                    "name" => "Ask us your questions!",
                 ],
                 [
                     'id' => "theme_4",
-                    "title" => "Ask me your questions!",
+                    "name" => "Ask me your questions!",
                 ],
                 [
                     'id' => "theme_5",
-                    "title" => "Chat with Support",
+                    "name" => "Chat with Support",
                 ]
             ]);
         $widgetSettings->welcome_message_options =
@@ -65,51 +65,57 @@ class WidgetSettingsSeeder extends Seeder
 
                 [
                'id' => "theme_1",
-               "title" => "How can we help you with your website",
+               "name" => "How can we help you with your website",
            ],
            [
                'id' => "theme_2",
-               "title" => "Hey, want to cha with us ?",
+               "name" => "Hey, want to cha with us ?",
            ],
            [
                'id' => "theme_3",
-               "title" => "Anything you want to ask?",
+               "name" => "Anything you want to ask?",
            ],
            [
                'id' => "theme_4",
-               "title" => "Hello, ask us any question about our website",
+               "name" => "Hello, ask us any question about our website",
            ]
         ]);
         $widgetSettings->background_image_options =
             json_encode([
             [
-                'id' => "theme_1",
-                "title" => "Shapes",
-                "src" => "shapes.svg",
+                'id' => "none",
+                "name" => "None",
+                "src" => "none.svg",
                 "is_default" => true
             ],
             [
-                'id' => "theme_2",
-                "title" => "4 Point Stars",
-                "src" => "4-point-stars.svg",
-                "is_default" => false
-            ],
-            [
-                'id' => "theme_2",
-                "title" => "Anchors Away",
-                "src" => "anchors-away.svg",
-                "is_default" => false
-            ],
-            [
-                'id' => "theme_3",
-                "title" => "Autumn",
+                'id' => "autumn",
+                "name" => "Autumn",
                 "src" => "autumn.svg",
                 "is_default" => false
             ],
             [
-                'id' => "theme_4",
-                "title" => "Aztec",
-                "src" => "aztec.svg",
+                'id' => "hexagons",
+                "name" => "Hexagons",
+                "src" => "hexagons.svg",
+                "is_default" => false
+            ],
+            [
+                'id' => "jigsaw",
+                "name" => "Jigsaw",
+                "src" => "jigsaw.svg",
+                "is_default" => false
+            ],
+            [
+                'id' => "jupiter",
+                "name" => "Jupiter",
+                "src" => "jupiter.svg",
+                "is_default" => false
+            ],
+            [
+                'id' => "food",
+                "name" => "Food",
+                "src" => "food.svg",
                 "is_default" => false
             ]
         ]);

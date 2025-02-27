@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('website_domain');
             $table->string('website_icon')->default("default-icon.png");
             $table->unsignedBigInteger("organization_id");
-            $table->longText('code');
             $table->timestamps();
 
             $table->foreign('organization_id')->references('id')->on('organization_settings')->onDelete('cascade');

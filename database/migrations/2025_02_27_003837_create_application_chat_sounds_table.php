@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('widget_addons', function (Blueprint $table) {
+        Schema::create('application_chat_sounds', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('widget_id');
-            $table->boolean('enable_emojis');
-            $table->boolean('prevent_profanity');
+            $table->string("name");
+            $table->string("file_name");
             $table->timestamps();
-
-            $table->foreign('widget_id')->references('id')->on('widgets')->onDelete('cascade');
         });
     }
 
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('widget_addons');
+        Schema::dropIfExists('application_chat_sounds');
     }
 };

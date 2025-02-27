@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PermissionsController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeamMembersController;
+use App\Http\Controllers\UserApplicationSettingsController;
+use App\Http\Controllers\WidgetController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -17,13 +20,19 @@ Route::group(['middleware' => 'api', 'throttle:60,1'], function(){
 //Route::group(['middleware' => 'api', 'throttle:60,1'], function(){
 //});
 
+Route::get('/check', [AuthController::class, 'check']);
 
 Route::group(['middleware' => ['jwt.auth', 'canAccess']], function() {
 
-    Route::get('/check', [AuthController::class, 'check']);
-
-    ##Undone
     Route::group(['prefix' => 'dashboard'], function () {
+        Route::group(['prefix' => 'profile'], function () {
+            Route::post('/update/account', [ProfileController::class, 'updateAccount']);
+            Route::post('/update/password', [ProfileController::class, 'updatePassword']);
+            Route::post('/update/avatar/upload', [ProfileController::class, 'uploadAvatar']);
+            Route::post('/update/avatar/remove', [ProfileController::class, 'removeAvatar']);
+            Route::post('/update/avatar/use-random', [ProfileController::class, 'useRandomAvatar']);
+        });
+
         Route::group(['prefix' => 'permissions'], function () {
             Route::get('/get', [PermissionsController::class, 'getPermissions']);
             Route::get('/get-available-privilege', [PermissionsController::class, 'getAvailablePrivilege']);
@@ -43,6 +52,16 @@ Route::group(['middleware' => ['jwt.auth', 'canAccess']], function() {
             Route::post('/delete-selected', [TeamMembersController::class, 'deleteSelectedTeamMember']);
             Route::post('/edit/{item}', [TeamMembersController::class, 'editTeamMember']);
             Route::post('/search/', [TeamMembersController::class, 'searchTeamMember']);
+        });
+
+        Route::group(['prefix' => 'widget'], function () {
+            Route::get('/get', [WidgetController::class, 'getWidget']);
+            Route::post('/update', [WidgetController::class, 'updateWidget']);
+        });
+
+        Route::group(['prefix' => 'application-settings'], function () {
+            Route::get('/get', [UserApplicationSettingsController::class, 'getUserApplicationSettings']);
+            Route::post('/update', [UserApplicationSettingsController::class, 'updateUserApplicationSettings']);
         });
     });
 });
