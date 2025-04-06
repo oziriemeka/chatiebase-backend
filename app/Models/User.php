@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -69,6 +71,17 @@ class User extends Authenticatable implements JWTSubject
 
     public function getAvatarAttribute($value) {
         return asset('storage/user/'.$value);
+    }
+
+    public function organizationSettings(){
+        return $this->hasOneThrough(
+            OrganizationSettings::class,  // Final target model
+            UserOrganization::class,      // Intermediate model
+            'user_id',                    // Foreign key on UserOrganization (links to User)
+            'id',                          // Foreign key on OrganizationSettings
+            'id',                          // Local key on User
+            'organization_id'              // Local key on UserOrganization (links to OrganizationSettings)
+        );
     }
 
     public function privilege()

@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('organization_settings', function (Blueprint $table) {
+        Schema::create('conversation_categories', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->string("timezone");
-            $table->string("website");
-            $table->string("country");
+            $table->string('name'); // Categories are available for all conversations
+            $table->foreignId('organization_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('organization_id')->references('id')->on('organization_settings')->onDelete('cascade');
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('organization_settings');
+        Schema::dropIfExists('conversation_categories');
     }
 };

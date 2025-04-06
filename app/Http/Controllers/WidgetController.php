@@ -32,7 +32,7 @@ class WidgetController extends Controller
             // even tho it doesn't matter.
 
             $organizationId = UserOrganization::where("user_id", auth()->user()->id)->firstOrFail();
-            $widget = Widget::where('organization_id', $organizationId->id)->first();
+            $widget = Widget::where('organization_id', $organizationId->organization_id)->first();
             $widgetSettings = WidgetSettings::first();
 
             if(!$widget){
@@ -69,12 +69,12 @@ class WidgetController extends Controller
 
     private function saveWidgetOptions($alias): Widget {
         $userOrganization = UserOrganization::where("user_id", auth()->user()->id)->first();
-        $organizationSettings = OrganizationSettings::where('id', $userOrganization->id)->first();
+        $organizationSettings = OrganizationSettings::where('id', $userOrganization->organization_id)->first();
         $widget = new Widget();
         $widget->id_alias = $alias;
         $widget->website_name = $organizationSettings->name;
         $widget->website_domain = $organizationSettings->website;
-        $widget->organization_id = $userOrganization->id;
+        $widget->organization_id = $userOrganization->organization_id;
         $widget->save();
         return $widget;
     }
@@ -146,8 +146,7 @@ class WidgetController extends Controller
         if(!$userOrganization){
             return response()->json([ErrorStatus::REQUEST_ERROR => "Sorry unable to perform operation at this time"]);
         }
-        $widget = Widget::where('organization_id', $userOrganization->id)->firstOrFail();
-
+        $widget = Widget::where('organization_id', $userOrganization->organization_id)->firstOrFail();
         //Todo: check if user has widget edit rights or permissions
         try {
             switch($request->field) {

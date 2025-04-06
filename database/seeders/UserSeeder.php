@@ -13,6 +13,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Faker\Factory;
+use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
@@ -23,6 +24,7 @@ class UserSeeder extends Seeder
     {
         //superadmin
         $user1 = new User();
+        $user1->user_id = Str::uuid()->toString();
         $user1->name = 'Admin Admin';
         $user1->email = 'admin@chatiebase.com';
         $user1->password = Hash::make('password');
@@ -30,12 +32,15 @@ class UserSeeder extends Seeder
         $user1->status = 'active';
         $user1->save();
 
+
+
         $organizationSettings = new OrganizationSettings();
         $organizationSettings->name = "XZY";
         $organizationSettings->website = "https://zxy.com";
         $organizationSettings->timezone = "Europe/London";
         $organizationSettings->country = "United Kingdom";
         $organizationSettings->save();
+
 
         $userOrganization = new UserOrganization();
         $userOrganization->user_id = $user1->id;
@@ -54,6 +59,7 @@ class UserSeeder extends Seeder
         unset($user);
 
         $user = new User();
+        $user->user_id = Str::uuid()->toString();
         $user->name = 'Neon Emmanuel';
         $user->email = 'neon@gnail.com';
         $user->password = Hash::make('password');
@@ -77,8 +83,8 @@ class UserSeeder extends Seeder
 
         unset($user);
 
-
         $user = new User();
+        $user->user_id = Str::uuid()->toString();
         $user->name = 'Oziri Emeka Emmanuel';
         $user->email = 'oziriemeka@gmail.com';
         $user->password = Hash::make('123456');
@@ -105,6 +111,7 @@ class UserSeeder extends Seeder
         for($i = 0; $i < 15; $i++){
             $faker = Factory::create();
             $user = new User();
+            $user->user_id = Str::uuid()->toString();
             $user->name = $faker->name();
             $user->email = $faker->email;
             $user->password = Hash::make('password');
@@ -126,6 +133,14 @@ class UserSeeder extends Seeder
 
             unset($user);
         }
+
+        //Random Organization Two
+        $randomOrg = new OrganizationSettings();
+        $randomOrg->name = "XZY";
+        $randomOrg->website = "https://zxy.com";
+        $randomOrg->timezone = "Europe/London";
+        $randomOrg->country = "United Kingdom";
+        $randomOrg->save();
     }
 
     public function setDefaultpermission(UserOrganization $org)

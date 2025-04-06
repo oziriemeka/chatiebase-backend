@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('organization_settings', function (Blueprint $table) {
+        Schema::create('customer_contacts', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->string("timezone");
-            $table->string("website");
-            $table->string("country");
+            $table->foreignId('customer_id');
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
             $table->timestamps();
+
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+
         });
     }
 
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('organization_settings');
+        Schema::dropIfExists('customer_contacts');
     }
 };

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ErrorStatus;
 use App\Helpers\SuccessStatus;
+use App\Http\Resources\CountryResource;
 use App\Mail\ResetPassword;
 use App\Models\Country;
 use App\Models\GeneralSettings;
@@ -76,7 +77,7 @@ class AuthController extends Controller
                 "data" => [
                     'active_information' => $this->getUserLocationRaw($request),
                     'timezones' => $this->getTimeZone(),
-                    'countries' => Country::get()
+                    'countries' => CountryResource::collection(Country::get())
                 ]
             ]);
         }
@@ -155,7 +156,7 @@ class AuthController extends Controller
                     'expires_in' => auth()->factory()->getTTL() * 60,
                     'name' => auth()->user()->name,
                     'email' => $user->email,
-                    'avatar' => asset(auth()->user()->avatar),
+                    'avatar' =>  asset('storage/user/'.auth()->user()->avatar),
                     'user_id' => $user->id,
                 ]);
             } catch(\Exception $ex){
@@ -228,7 +229,8 @@ class AuthController extends Controller
     }
     public function logout()
     {
-        Auth::logout();
+        auth()->logout();
+        auth()->invalidate(true);
         return response()->json([
             SuccessStatus::SUCCESS => 'success'
         ]);
@@ -240,7 +242,7 @@ class AuthController extends Controller
         $user->save();
 
         return response()->json([
-            'user_id' => $user->id,
+            'user_id' => $user->user_id,
             'access_token' => $token,
             'type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,

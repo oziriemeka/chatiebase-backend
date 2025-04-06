@@ -1,13 +1,15 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ContactsController;
+use App\Http\Controllers\OrganizationSettingsController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeamMembersController;
 use App\Http\Controllers\UserApplicationSettingsController;
 use App\Http\Controllers\WidgetController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\ConversationController;
 
 Route::group(['middleware' => 'api', 'throttle:60,1'], function(){
     Route::post('/login', [AuthController::class, 'login'])->name('login');
@@ -20,7 +22,7 @@ Route::group(['middleware' => 'api', 'throttle:60,1'], function(){
 //Route::group(['middleware' => 'api', 'throttle:60,1'], function(){
 //});
 
-Route::get('/check', [AuthController::class, 'check']);
+
 
 Route::group(['middleware' => ['jwt.auth', 'canAccess']], function() {
 
@@ -63,5 +65,22 @@ Route::group(['middleware' => ['jwt.auth', 'canAccess']], function() {
             Route::get('/get', [UserApplicationSettingsController::class, 'getUserApplicationSettings']);
             Route::post('/update', [UserApplicationSettingsController::class, 'updateUserApplicationSettings']);
         });
+
+        Route::group(['prefix' => 'organization-settings'], function () {
+            Route::get('/get', [OrganizationSettingsController::class, 'getOrganizationSettings']);
+            Route::post('/update', [OrganizationSettingsController::class, 'updateOrganizationSettings']);
+        });
+
+        Route::group(['prefix' => 'contacts'], function () {
+            Route::get('/get', [ContactsController::class, 'getContacts']);
+        });
+
+        Route::group(['prefix' => 'conversation'], function () {
+            Route::get('/get/{conversationId}', [ConversationController::class, 'getConversation']);
+            Route::Delete('/delete/{conversationId}/message/{messageId}', [ConversationController::class, 'deleteConversationMessage']);
+            Route::post('/send/{conversationId}', [ConversationController::class, 'sendConversationMessage']);
+        });
     });
 });
+Route::get('/check', [AuthController::class, 'check']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
